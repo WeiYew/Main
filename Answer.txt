@@ -1,0 +1,43 @@
+Question 2.4
+==========
+CREATE TABLE users (
+user_id INT NOT NULL PRIMARY KEY,
+email_id VARCHAR(200) NOT NULL,
+password VARCHAR(64) NOT NULL,
+first_name VARCHAR(128) NOT NULL,
+last_name VARCHAR(128) NOT NULL,
+enabled BIT DEFAULT 0
+)
+
+Question 2.5
+============
+CREATE TABLE user-signin_logs (
+user_id INT NOT NULL,
+session_id VARCHAR(128) NOT NULL PRIMARY,
+signed_in_time TIMESTAMP,
+signed_out_time TIMESTAMP,
+PRIMARY KEY (user_id, session_id),
+CONSTRAINT FK_userid FOREIGN KEY (user_id) REFERENCES users(user_id)
+)
+
+Question 3
+============
+SELECT users.user_id,
+user-signin_logs.signed_in_time,
+user-signin_logs.signed_out_time
+FROM
+users
+INNER JOIN
+user-signin_logs ON users.user_id = user-signin_logs.user_id
+ORDER BY user-signin_logs.signed_in_time;
+
+//The question didn't state which fields to be use for descending but logically speaking, the signed_in_time descending would be better as client might be still login and didn't sign out so sign out value maybe null and we are able to track client latest sign in date
+
+Question 4
+============
+SELECT users.user_id, users.email_id, users.password, users.first_name, users.last_name, COUNT(*) AS counter
+FROM users
+GROUP BY users.user_id, users.email_id, users.password, users.first_name, users.last_name
+HAVING (COUNT(*) > 1);
+
+
